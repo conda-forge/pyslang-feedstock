@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/MikePopoloski/slang/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 2032cd8bb1c1218060abcc2bd27c77e98cc1880741a589bf19d41663c563c9d0
+  sha256: 50676d5a9adbefb97d266a4b174e6b0513901afd5ac57a6cdfea0a61149c3704
 
 build:
   number: 0
