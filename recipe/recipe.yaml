@@ -1,13 +1,12 @@
 context:
   version: "11.0"
-  slang_version: "10.0"
 
 package:
   name: pyslang
   version: ${{ version }}
 
 source:
-  url: https://github.com/MikePopoloski/slang/archive/refs/tags/v${{ slang_version }}.tar.gz
+  url: https://github.com/MikePopoloski/slang/archive/refs/tags/v${{ version }}.tar.gz
   sha256: 2032cd8bb1c1218060abcc2bd27c77e98cc1880741a589bf19d41663c563c9d0
 
 build:
@@ -41,7 +40,7 @@ requirements:
         - mimalloc >=2.2
   run:
     - python
-    - slang-verilog ==${{ slang_version }}
+    - slang-verilog ==${{ version }}
 
 tests:
   - python:
