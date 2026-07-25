@@ -10,7 +10,7 @@ source:
   sha256: 50676d5a9adbefb97d266a4b174e6b0513901afd5ac57a6cdfea0a61149c3704
 
 build:
-  number: 1
+  number: 2
   script:
     - if: unix
       then: CMAKE_ARGS="${CMAKE_ARGS} -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF" python -m pip install . -vv --no-build-isolation
