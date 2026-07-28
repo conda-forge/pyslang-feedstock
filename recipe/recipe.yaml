@@ -8,6 +8,8 @@ package:
 source:
   url: https://github.com/MikePopoloski/slang/archive/refs/tags/v${{ version }}.tar.gz
   sha256: 50676d5a9adbefb97d266a4b174e6b0513901afd5ac57a6cdfea0a61149c3704
+  patches:
+    - fmt-12.2.patch
 
 build:
   number: 1
