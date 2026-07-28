@@ -12,7 +12,7 @@ source:
     - fmt-12.2.patch
 
 build:
-  number: 1
+  number: 2
   script:
     - if: unix
       then: CMAKE_ARGS="${CMAKE_ARGS} -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF" python -m pip install . -vv --no-build-isolation
