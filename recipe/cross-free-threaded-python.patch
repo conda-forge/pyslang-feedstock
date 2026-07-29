@@ -1,0 +1,16 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d978356c2..7942829e8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -105,7 +105,9 @@ set(SCRIPTS_DIR ${PROJECT_SOURCE_DIR}/scripts)
+ 
+ # Find Python. If we're building python bindings we need the development modules
+ # as well.
+-if(SLANG_INCLUDE_PYLIB)
++if(SLANG_INCLUDE_PYLIB AND CMAKE_CROSSCOMPILING AND
++   Python_FIND_ABI MATCHES "ON$")
++  find_package(Python REQUIRED COMPONENTS Development.Module)
++elseif(SLANG_INCLUDE_PYLIB)
+   find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+ else()
+   find_package(Python REQUIRED COMPONENTS Interpreter)
