@@ -13,7 +13,7 @@ source:
     - cross-free-threaded-python.patch
 
 build:
-  number: 2
+  number: 3
   script:
     - if: unix and build_platform != target_platform and "cp314t" in python
       then: CMAKE_ARGS="${CMAKE_ARGS} -DPython_FIND_ABI=OFF;OFF;OFF;ON -DPython_INCLUDE_DIR=${PREFIX}/include/python3.14t"
