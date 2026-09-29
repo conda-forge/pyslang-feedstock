@@ -1,5 +1,5 @@
 context:
-  version: "11.0"
+  version: "12.0"
 
 package:
   name: pyslang
@@ -7,13 +7,13 @@ package:
 
 source:
   url: https://github.com/MikePopoloski/slang/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 50676d5a9adbefb97d266a4b174e6b0513901afd5ac57a6cdfea0a61149c3704
+  sha256: 64b3eb9d38ee126e009cbb8da0cfa6f68d970334e52ba084ad7c68e4b5fa804c
   patches:
     - fmt-12.2.patch
     - cross-free-threaded-python.patch
 
 build:
-  number: 3
+  number: 0
   script:
     - if: unix and build_platform != target_platform and "cp314t" in python
       then: CMAKE_ARGS="${CMAKE_ARGS} -DPython_FIND_ABI=OFF;OFF;OFF;ON -DPython_INCLUDE_DIR=${PREFIX}/include/python3.14t"
