@@ -9,25 +9,29 @@ source:
   url: https://github.com/MikePopoloski/slang/archive/refs/tags/v${{ version }}.tar.gz
   sha256: 64b3eb9d38ee126e009cbb8da0cfa6f68d970334e52ba084ad7c68e4b5fa804c
   patches:
-    - fmt-12.2.patch
-    - cross-free-threaded-python.patch
+    # Build for each Python ABI without the separately packaged nanobind backend.
+    - per-python-nanobind.patch
+    # Use the conda fmt library without compiling another copy into slang.
+    - system-fmt.patch
 
 build:
   number: 0
   script:
+    - python -c "from importlib.metadata import distribution; import shutil; d = distribution('nanobind'); shutil.copyfile(d.locate_file(next(p for p in d.files if str(p).endswith('licenses/LICENSE'))), 'nanobind-LICENSE')"
+    - python -c "import nanobind; from pathlib import Path; p = Path(nanobind.__file__).parent / 'ext/robin_map/include/tsl/robin_hash.h'; Path('robin-map-LICENSE').write_text(p.read_text().split('*/', 1)[0] + '*/')"
     - if: unix and build_platform != target_platform and "cp314t" in python
       then: CMAKE_ARGS="${CMAKE_ARGS} -DPython_FIND_ABI=OFF;OFF;OFF;ON -DPython_INCLUDE_DIR=${PREFIX}/include/python3.14t"
     - if: unix
-      then: CMAKE_ARGS="${CMAKE_ARGS} -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF" python -m pip install . -vv --no-build-isolation
+      then: CMAKE_ARGS="${CMAKE_ARGS} -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DSLANG_USE_SYSTEM_FMT=ON -DSLANG_USE_SYSTEM_BOOST=ON -DSLANG_USE_SYSTEM_TOMLPLUSPLUS=ON -DFETCHCONTENT_FULLY_DISCONNECTED=ON" python -m pip install . -vv --no-deps --no-build-isolation
     - if: win
-      then: set "CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DSLANG_USE_MIMALLOC=OFF" && python -m pip install . -vv --no-build-isolation
+      then: set "CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DSLANG_USE_MIMALLOC=OFF -DSLANG_USE_SYSTEM_FMT=ON -DSLANG_USE_SYSTEM_BOOST=ON -DSLANG_USE_SYSTEM_TOMLPLUSPLUS=ON -DFETCHCONTENT_FULLY_DISCONNECTED=ON" && python -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
     - ${{ stdlib('c') }}
-    - cmake >=3.20
+    - cmake >=3.28
     - ninja
     - if: build_platform != target_platform
       then:
@@ -37,13 +41,14 @@ requirements:
     - python
     - pip
     - scikit-build-core
-    - pybind11 >=3.0
-    - pybind11-stubgen
+    - nanobind >=3.0.1,<4
+    - nanobind-abi
     - fmt >=12.1
     - libboost-devel
+    - tomlplusplus >=3.4
     - if: not win
       then:
-        - mimalloc >=2.2
+        - mimalloc >=3.5
   run:
     - python
     - slang-verilog ==${{ version }}
@@ -53,6 +58,14 @@ tests:
       imports:
         - pyslang
       pip_check: true
+  - files:
+      source:
+        - pyslang/tests
+        - pyslang/examples/extract_logic_names.py
+    requirements:
+      run:
+        - pytest
+    script: pytest -q pyslang/tests
 
 about:
   homepage: https://sv-lang.com/
@@ -61,8 +74,11 @@ about:
     pyslang provides Python bindings for slang, a software library that
     provides various components needed to lexically analyze, parse, type
     check, and elaborate SystemVerilog code.
-  license: MIT
-  license_file: LICENSE
+  license: MIT AND BSD-3-Clause
+  license_file:
+    - LICENSE
+    - nanobind-LICENSE
+    - robin-map-LICENSE
   repository: https://github.com/MikePopoloski/slang
   documentation: https://sv-lang.com/pyslang/
 

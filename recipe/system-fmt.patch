@@ -1,0 +1,21 @@
+--- a/source/CMakeLists.txt
++++ b/source/CMakeLists.txt
+@@ -117,7 +117,6 @@
+   text/SourceSnippet.cpp
+   util/BumpAllocator.cpp
+   util/CommandLine.cpp
+-  util/Fmt.cpp
+   util/IntervalMap.cpp
+   util/OS.cpp
+   util/SmallVector.cpp
+@@ -125,6 +124,10 @@
+   util/ThreadPool.cpp
+   util/TimeTrace.cpp
+   util/Util.cpp)
++
++if(NOT SLANG_USE_SYSTEM_FMT)
++  target_sources(slang_slang PRIVATE util/Fmt.cpp)
++endif()
+ 
+ add_subdirectory(ast)
+ 

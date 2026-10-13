@@ -5,7 +5,7 @@ Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/pyslang-feedsto
 
 Home: https://sv-lang.com/
 
-Package license: MIT
+Package license: MIT AND BSD-3-Clause
 
 Summary: Python bindings for slang, a library for compiling SystemVerilog
 
