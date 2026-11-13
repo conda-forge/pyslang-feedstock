@@ -11,8 +11,8 @@ source:
   patches:
     # Build for each Python ABI without the separately packaged nanobind backend.
     - per-python-nanobind.patch
-    # Use the conda fmt library without compiling another copy into slang.
-    - system-fmt.patch
+    # Link the bindings to the matching conda Slang shared library.
+    - shared-slang.patch
 
 build:
   number: 1
@@ -22,9 +22,9 @@ build:
     - if: unix and build_platform != target_platform and "cp314t" in python
       then: CMAKE_ARGS="${CMAKE_ARGS} -DPython_FIND_ABI=OFF;OFF;OFF;ON -DPython_INCLUDE_DIR=${PREFIX}/include/python3.14t"
     - if: unix
-      then: CMAKE_ARGS="${CMAKE_ARGS} -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DSLANG_USE_SYSTEM_FMT=ON -DSLANG_USE_SYSTEM_BOOST=ON -DSLANG_USE_SYSTEM_TOMLPLUSPLUS=ON -DFETCHCONTENT_FULLY_DISCONNECTED=ON" python -m pip install . -vv --no-deps --no-build-isolation
+      then: CMAKE_ARGS="${CMAKE_ARGS} -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DFETCHCONTENT_FULLY_DISCONNECTED=ON" python -m pip install . -vv --no-deps --no-build-isolation
     - if: win
-      then: set "CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DSLANG_USE_MIMALLOC=OFF -DSLANG_USE_SYSTEM_FMT=ON -DSLANG_USE_SYSTEM_BOOST=ON -DSLANG_USE_SYSTEM_TOMLPLUSPLUS=ON -DFETCHCONTENT_FULLY_DISCONNECTED=ON" && python -m pip install . -vv --no-deps --no-build-isolation
+      then: set "CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DFETCHCONTENT_FULLY_DISCONNECTED=ON" && python -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   build:
@@ -43,14 +43,13 @@ requirements:
     - scikit-build-core
     - nanobind >=3.0.1,<4
     - nanobind-abi
+    - slang-verilog ==${{ version }}[build_number='>=1']
     - fmt >=12.1
     - libboost-devel
     - tomlplusplus >=3.4
-    - if: not win
-      then:
-        - mimalloc >=3.5
   run:
     - python
+    - slang-verilog ==${{ version }}[build_number='>=1']
 
 tests:
   - python:
@@ -58,13 +57,17 @@ tests:
         - pyslang
       pip_check: true
   - files:
+      recipe:
+        - test_shared_library.py
       source:
         - pyslang/tests
         - pyslang/examples/extract_logic_names.py
     requirements:
       run:
         - pytest
-    script: pytest -q pyslang/tests
+    script:
+      - python test_shared_library.py
+      - pytest -q pyslang/tests
 
 about:
   homepage: https://sv-lang.com/
