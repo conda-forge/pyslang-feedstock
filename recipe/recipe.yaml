@@ -15,7 +15,7 @@ source:
     - system-fmt.patch
 
 build:
-  number: 0
+  number: 1
   script:
     - python -c "from importlib.metadata import distribution; import shutil; d = distribution('nanobind'); shutil.copyfile(d.locate_file(next(p for p in d.files if str(p).endswith('licenses/LICENSE'))), 'nanobind-LICENSE')"
     - python -c "import nanobind; from pathlib import Path; p = Path(nanobind.__file__).parent / 'ext/robin_map/include/tsl/robin_hash.h'; Path('robin-map-LICENSE').write_text(p.read_text().split('*/', 1)[0] + '*/')"
