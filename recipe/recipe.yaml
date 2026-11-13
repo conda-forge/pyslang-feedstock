@@ -51,7 +51,6 @@ requirements:
         - mimalloc >=3.5
   run:
     - python
-    - slang-verilog ==${{ version }}
 
 tests:
   - python:
