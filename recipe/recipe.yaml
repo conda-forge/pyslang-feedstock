@@ -43,9 +43,9 @@ requirements:
     - scikit-build-core
     - nanobind >=3.0.1,<4
     - nanobind-abi
-    # Windows needs the iterator DLL exports added in build 2.
+    # Windows needs the iterator DLL exports from the corrected shared-library build.
     - if: win
-      then: slang-verilog ==${{ version }}[build_number='>=2']
+      then: slang-verilog ==${{ version }}[build_number='>=3']
       else: slang-verilog ==${{ version }}[build_number='>=1']
     - fmt >=12.1
     - libboost-devel
@@ -53,7 +53,7 @@ requirements:
   run:
     - python
     - if: win
-      then: slang-verilog ==${{ version }}[build_number='>=2']
+      then: slang-verilog ==${{ version }}[build_number='>=3']
       else: slang-verilog ==${{ version }}[build_number='>=1']
 
 tests:
