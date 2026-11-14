@@ -43,13 +43,18 @@ requirements:
     - scikit-build-core
     - nanobind >=3.0.1,<4
     - nanobind-abi
-    - slang-verilog ==${{ version }}[build_number='>=1']
+    # Windows needs the iterator DLL exports added in build 2.
+    - if: win
+      then: slang-verilog ==${{ version }}[build_number='>=2']
+      else: slang-verilog ==${{ version }}[build_number='>=1']
     - fmt >=12.1
     - libboost-devel
     - tomlplusplus >=3.4
   run:
     - python
-    - slang-verilog ==${{ version }}[build_number='>=1']
+    - if: win
+      then: slang-verilog ==${{ version }}[build_number='>=2']
+      else: slang-verilog ==${{ version }}[build_number='>=1']
 
 tests:
   - python:
