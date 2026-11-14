@@ -1,0 +1,27 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -260,8 +260,12 @@
+   message(STATUS "Build STATIC library as: ${SLANG_LIB_NAME}")
+ endif()
+ 
+-include(external/CMakeLists.txt)
+-add_subdirectory(source)
++find_package(slang ${PROJECT_VERSION} EXACT CONFIG REQUIRED)
++find_package(fmt 12 CONFIG REQUIRED)
++get_target_property(slang_library_type slang::slang TYPE)
++if(NOT slang_library_type STREQUAL "SHARED_LIBRARY")
++  message(FATAL_ERROR "pyslang requires the installed Slang shared library")
++endif()
+ 
+ if(SLANG_INCLUDE_TESTS)
+   include(CTest)
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -59,6 +59,7 @@
+ [tool.scikit-build.cmake.define]
+ SLANG_INCLUDE_TESTS = "OFF"
+ SLANG_INCLUDE_TOOLS = "OFF"
++SLANG_INCLUDE_INSTALL = "OFF"
+ SLANG_INCLUDE_PYLIB = "ON"
+ 
+ [tool.cibuildwheel]
