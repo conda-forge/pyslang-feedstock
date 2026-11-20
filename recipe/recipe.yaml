@@ -43,14 +43,13 @@ requirements:
     - scikit-build-core
     - nanobind >=3.0.1,<4
     - nanobind-abi
-    # Build 2 exports the numeric helper and iterator methods used by these bindings.
-    - slang-verilog ==${{ version }}[build_number='>=2']
+    - slang-verilog ==${{ version }}
     - fmt >=12.1
     - libboost-devel
     - tomlplusplus >=3.4
   run:
     - python
-    - slang-verilog ==${{ version }}[build_number='>=2']
+    - slang-verilog ==${{ version }}
 
 tests:
   - python:
