@@ -1,5 +1,5 @@
 context:
-  version: "12.1"
+  version: "12.2"
 
 package:
   name: pyslang
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/MikePopoloski/slang/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: e7454393956ef0f3e9bbcac27f7de473e11e1fd7be125c3009f1f2bfeddf0358
+  sha256: 29c8dee801e489e10f84ebc8a65b641bbcee18614fd183223b35e85c2461b6ab
   patches:
     # Build for each Python ABI without the separately packaged nanobind backend.
     - per-python-nanobind.patch
@@ -43,14 +43,13 @@ requirements:
     - scikit-build-core
     - nanobind >=3.0.1,<4
     - nanobind-abi
-    # Build 2 exports the numeric helper and iterator methods used by these bindings.
-    - slang-verilog ==${{ version }}[build_number='>=2']
+    - slang-verilog ==${{ version }}
     - fmt >=12.1
     - libboost-devel
     - tomlplusplus >=3.4
   run:
     - python
-    - slang-verilog ==${{ version }}[build_number='>=2']
+    - slang-verilog ==${{ version }}
 
 tests:
   - python:
